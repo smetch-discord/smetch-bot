@@ -1,159 +1,137 @@
 import discord
+from discord.ext import commands
 import asyncio
 import pymongo
 from datetime import datetime
 import os
-from discord import DMChannel
+import re
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
 db = pymongo.MongoClient(os.environ.get('MONGO_URI')).SMETCH
 
-async def thank(message, client):
-  
-  if isinstance(message.channel, DMChannel):
-    return
+class thank(commands.Cog):
 
-  # Checks if the message is mentioning anyone
-  if len(message.mentions) > 0:
-
-    # Empty list created which will contain who has been thanked
-    selected = []
-
-    # Checks if the member was being dumdum and mentioning themself or a bot
-    if not (message.mentions[0].id == message.author.id) or (message.mentions[0].bot):
-      thanked_embed_desc = f'<@{message.author.id}> **thanked** <@{message.mentions[0].id}>'
-      selected.append(message.mentions[0].id)
-    if len(message.mentions) > 1:
-      for i in range(len(message.mentions) - 1):
-        if (message.mentions[i + 1].id == message.author.id) or (message.mentions[i + 1].bot):
-          pass
-        else:
-          thanked_embed_desc += ' **and** <@' + str(message.mentions[i + 1].id) + '>'
-        selected.append(message.mentions[i + 1].id)
-    thanked_embed = discord.Embed()
-    try:
-      thanked_embed.description = thanked_embed_desc
-    except UnboundLocalError:
-      thanked_embed_desc = "Don't thank a bot or yourself <:barry:807982386285510696> <:kek:808518861182992415>"
-      thanked_embed.description = thanked_embed_desc
-    thanked_embed.color = 0x8647a0
-    if thanked_embed_desc != "Don't thank a bot or yourself <:barry:807982386285510696> <:kek:808518861182992415>":
-      for select in selected:
-        db.data.update_one({"member": select}, {"$inc": {"daily_thanks": 1}}, upsert=True)
-        db.data.update_one({"member": select}, {"$inc": {"weekly_thanks": 1}}, upsert=True)
-        db.data.update_one({"member": select}, {"$inc": {"alltime_thanks": 1}}, upsert=True)
-    await message.channel.send(embed=thanked_embed)
-    return
-  else:
-    messages = await message.channel.history(limit=30).flatten()
+  def __init__(self, bot):
+    self.bot = bot
+      
+  async def thank(self, message):
+    if isinstance(message.channel, discord.DMChannel): return
+    if len(message.mentions) > 0:
+      selected = []
+      output = f'<@{message.author.id}> thanked '
+      for mention in message.mentions:
+        if not (mention.bot or mention.id == message.author.id):
+          output += f'<@{mention.id}>'
+          selected.append(mention.id)
+      if output == f'<@{message.author.id}> thanked ': return
+      for selectee in selected:
+        db.data.update_one({"member": selectee}, {"$inc": {"daily_thanks": 1}}, upsert=True)
+        db.data.update_one({"member": selectee}, {"$inc": {"weekly_thanks": 1}}, upsert=True)
+        db.data.update_one({"member": selectee}, {"$inc": {"alltime_thanks": 1}}, upsert=True)
+      await message.channel.send(embed=discord.Embed(description=output, color=0xaaffff))
+      return
+    messages = await message.channel.history(limit=50).flatten()
     users = []
-    for m in messages:
-      if m.author.bot or m.author.id == message.author.id:
-        continue
-      else:
-        users.append(m.author.id)
-    users = list(set(users))
-    final_users = ''
-    for i in range(4):
-      try:
-        final_users = final_users + "**" + str(i + 1) + ".** " + "<@" + str(users[i]) + ">\n"
-      except IndexError:
-        break
-    thanking_embed = discord.Embed()
-    thanking_embed.description = "**Who would you like to thank** <@" + str(message.author.id) + ">\n" + final_users
-    thanking_embed.color = 0x8647a0
-    bot_message = await message.channel.send("<@" + str(message.author.id) + ">",embed=thanking_embed)
-    emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣','🗑']
+    for msg in messages:
+      if not msg.author.id == message.author.id or msg.author.bot:
+        users.append(msg.author.id)
+    a = list(set(users))
+    users = a[-4:]
+    description = f'**Who would you like to thank <@{message.author.id}>**\n'
     for i in range(len(users)):
-      if i > 4:
-        break
-      else:
-        await bot_message.add_reaction(emojis[i])
-    await bot_message.add_reaction(emojis[4])
-
-    def check(reaction, user):
-      return (str(reaction.emoji) in emojis) and (user.id == message.author.id)
-
+      description += f'**{i + 1}**. <@{users[i]}>\n'
+    confirmation = await message.channel.send(content=f'<@{message.author.id}>', embed=discord.Embed(description=description, color=0xaaffff))
+    emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣']
+    for i in range(len(users)):
+      await confirmation.add_reaction(emojis[i])
+    await confirmation.add_reaction('🗑')
     try:
-      reaction = await client.wait_for('reaction_add', check=check, timeout=30)
-      k = 0;
-      if reaction[0].emoji == '🗑':
-        await bot_message.delete()
+      reaction, user = await self.bot.wait_for('reaction_add', check=(lambda x, y: (str(x.emoji) in emojis or str(x.emoji) == '🗑') and (y.id == message.author.id)), timeout=45)
+      if str(reaction.emoji) == '🗑':
+        await confirmation.delete()
         return
-      if reaction[0].emoji == '1️⃣': 
-        k = 1
-      elif reaction[0].emoji == '2️⃣':
-        k = 2
-      elif reaction[0].emoji == '3️⃣':
-        k = 3
-      elif reaction[0].emoji == '4️⃣':
-        k = 4
-      selected = users[k - 1]
-      if k!= 0:
-        db.data.update_one({"member": selected}, {"$inc": {"daily_thanks": 1}}, upsert=True)
-        db.data.update_one({"member": selected}, {"$inc": {"weekly_thanks": 1}}, upsert=True)
-        db.data.update_one({"member": selected}, {"$inc": {"alltime_thanks": 1}}, upsert=True)
-      thanked_embed_desc = '<@' + str(message.author.id) + '> **thanked** <@' + str(selected) + '>\n'
-      thanked_embed = discord.Embed()
-      thanked_embed.description = thanked_embed_desc
-      thanked_embed.color = 0x8647a0
-      await bot_message.edit(content='', embed=thanked_embed)
-      await bot_message.clear_reactions()
+      elif str(reaction.emoji) == '1️⃣':
+        thanked = users[0]
+      elif str(reaction.emoji) == '2️⃣':
+        thanked = users[1]
+      elif str(reaction.emoji) == '3️⃣':
+        thanked = users[2]
+      elif str(reaction.emoji) == '4️⃣':
+        thanked = users[3]
+      db.data.update_one({"member": thanked}, {"$inc": {"daily_thanks": 1}}, upsert=True)
+      db.data.update_one({"member": thanked}, {"$inc": {"weekly_thanks": 1}}, upsert=True)
+      db.data.update_one({"member": thanked}, {"$inc": {"alltime_thanks": 1}}, upsert=True)
+      await message.channel.send(embed=discord.Embed(description=f'<@{message.author.id}> **thanked** <@{thanked}>', color=0xaaffff))
+      await confirmation.delete()
+      await confirmation.clear_reactions()
       return
     except asyncio.TimeoutError:
-      await bot_message.delete()
+      await confirmation.delete()
+      return
+
+  @commands.Cog.listener('on_message')
+  async def on_message(self, message):
+        result = re.match('(?<!\w)(?:t(?:han[qk]s*|(?:hn?|h?n)x+|y(?:[sv]m)?)|danke)(?!\w)', message.content.lower())
+        if result:
+          await thank.thank(self, message)
   
+  @commands.command(name='check')
+  async def check(self, ctx):
+    checkee = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
+    data = db.data.find({'member': checkee.id})
+    weekly_thanks, daily_thanks, alltime_thanks = 0, 0, 0
+    for document in data:
+      weekly_thanks = document['weekly_thanks']
+      alltime_thanks = document['alltime_thanks']
+      daily_thanks = document['daily_thanks']
+    embed = discord.Embed()
+    embed.set_thumbnail(url=checkee.avatar_url)
+    embed.set_author(name=checkee.display_name, icon_url=checkee.avatar_url)
+    embed.description = f'<a:star_blue:809072328192688159> **Joined on**\n{datetime.strftime(checkee.joined_at, "%d/%m/%Y")}\n\n<a:star_blue:809072328192688159> **Registered on**\n{datetime.strftime(checkee.created_at, "%d/%m/%Y")}\n\n<a:star_blue:809072328192688159> **Thanks (today)**\n{daily_thanks}\n\n<a:star_blue:809072328192688159> **Thanks (Last 7 days)**\n{weekly_thanks}\n\n<a:star_blue:809072328192688159> **Thanks (all time)**\n{alltime_thanks}'
+    embed.title = checkee.display_name
+    embed.color = 0x8647a0
+    await ctx.send(embed=embed)
 
-async def check(message):
-  user = message.author
-  if len(message.mentions) > 0:
-    user = message.mentions[0]
-  data = db.data.find({'member': user.id})
-  weekly_thanks = 0
-  daily_thanks = 0
-  alltime_thanks = 0
-  for document in data:
-    weekly_thanks = document['weekly_thanks']
-    alltime_thanks = document['alltime_thanks']
-    daily_thanks = document['daily_thanks']
-  embed = discord.Embed()
-  embed.set_thumbnail(url=user.avatar_url)
-  embed.set_author(name=user.display_name, icon_url=user.avatar_url)
-  embed.description = '<a:star_blue:809072328192688159> **Joined on**\n' + datetime.strftime(user.joined_at, '%d/%m/%Y') + '\n\n<a:star_blue:809072328192688159> **Registered on**\n' + datetime.strftime(user.created_at, '%d/%m/%Y') + '\n\n<a:star_blue:809072328192688159> **Thanks (today)**\n' + str(daily_thanks) + '\n\n<a:star_blue:809072328192688159> **Thanks (Last 7 days)**\n' + str(weekly_thanks) + '\n\n<a:star_blue:809072328192688159> **Thanks (all time)**\n' + str(alltime_thanks)
-  embed.title = user.display_name
-  embed.color = 0x8647a0
-  await message.channel.send(embed=embed)
-
-async def top(message, mode):
-  if mode == 'alltime':
-    thanks = list(db.data.aggregate([{'$sort': {'alltime_thanks': -1}}]))
-  if mode == 'weekly':
-    thanks = list(db.data.aggregate([{'$sort': {'weekly_thanks': -1}}]))
-  if mode == 'daily':
-    thanks = list(db.data.aggregate([{'$sort': {'daily_thanks': -1}}]))
-  thanks_a = []
-  for document in thanks:
-    thanks_a.append(document)
-  thanks = thanks_a
-  embed = discord.Embed()
-  embed.set_thumbnail(url='https://cdn.discordapp.com/icons/806922773607874590/890935573076ea1ea4dd706d5859a532.png?size=4096')
-  description = ''
-  i = 0
-  for thank in thanks:
-    if i == 10:
-      break
+  @commands.command(name='top')
+  async def top(self, ctx, mode):
     if mode == 'alltime':
-      description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['alltime_thanks']) + ' thanks\n'
-      embed.title = 'All time leaderboard'
+      thanks = list(db.data.aggregate([{'$sort': {'alltime_thanks': -1}}]))
     if mode == 'weekly':
-      description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['weekly_thanks']) + ' thanks\n'
-      embed.title = 'Weekly leaderboard'
+      thanks = list(db.data.aggregate([{'$sort': {'weekly_thanks': -1}}]))
     if mode == 'daily':
-      description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['daily_thanks']) + ' thanks\n'
-      embed.title = 'Daily leaderboard'
+      thanks = list(db.data.aggregate([{'$sort': {'daily_thanks': -1}}]))
+    thanks_a = []
+    for document in thanks:
+      thanks_a.append(document)
+    thanks = thanks_a
+    embed = discord.Embed()
+    embed.set_thumbnail(url='https://cdn.discordapp.com/icons/806922773607874590/890935573076ea1ea4dd706d5859a532.png?size=4096')
+    description = ''
+    i = 0
+    for thank in thanks:
+      if i == 10:
+        break
+      if mode == 'alltime':
+        description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['alltime_thanks']) + ' thanks\n'
+        embed.title = 'All time leaderboard'
+      if mode == 'weekly':
+        description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['weekly_thanks']) + ' thanks\n'
+        embed.title = 'Weekly leaderboard'
+      if mode == 'daily':
+        description += str(i + 1) + ' ‣ <@' + str(thank['member']) + '> **with** ' + str(thank['daily_thanks']) + ' thanks\n'
+        embed.title = 'Daily leaderboard'
+      i += 1
+    embed.description = description
+    await ctx.send(embed=embed)
+
+  @commands.command(name='setthanks')
+  async def setthanks(self, ctx, member: discord.Member, number: int):
+    if not(ctx.author.id == 805903287723229294):
+      return
+    member = member.id
+    db.data.update_one({"member": member}, {"$set": {"alltime_thanks": number}}, upsert=True)
+    await ctx.send('It is done')
+    return
     
-    i += 1
-  embed.description = description
-  await message.channel.send(embed=embed)

@@ -5,7 +5,7 @@ helper_channels = (807226238896570429, 807226384246243348, 807226722491039754, 8
 
 async def ping_helper(message, role, client):
   embed = discord.Embed()
-  embed.description = f'**The Helper Role will be pinged in 45 seconds. React with ❎ to cancel the ping.**\n<@{message.author.id}> needs {role.mention}'
+  embed.description = f'**The Helper Role will be pinged in 45 seconds. React with ❎ to cancel the ping.**\n<@{message.author.id}> needs <@&{role}>'
   ping_message = await message.channel.send(embed=embed)
   await ping_message.add_reaction('❎')
 
@@ -18,6 +18,6 @@ async def ping_helper(message, role, client):
     await ping_message.delete()
     return
   except asyncio.TimeoutError:
-    await ping_message.edit(content=f'<@{message.author.id}> needs {role.mention}', embed=None)
+    await ping_message.edit(content=f'<@{message.author.id}> needs <@&{role}>', embed=None)
     await ping_message.clear_reactions()
     return
