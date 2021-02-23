@@ -18,14 +18,15 @@ class thank(commands.Cog):
       
   async def thank(self, message):
     if isinstance(message.channel, discord.DMChannel): return
-    if len(message.mentions) > 0:
+    if message.mentions:
       selected = []
       output = f'<@{message.author.id}> thanked '
       for mention in message.mentions:
         if not (mention.bot or mention.id == message.author.id):
           output += f'<@{mention.id}>'
           selected.append(mention.id)
-      if output == f'<@{message.author.id}> thanked ': return
+      if not selected:
+        return
       for selectee in selected:
         db.data.update_one({"member": selectee}, {"$inc": {"daily_thanks": 1}}, upsert=True)
         db.data.update_one({"member": selectee}, {"$inc": {"weekly_thanks": 1}}, upsert=True)
@@ -35,7 +36,7 @@ class thank(commands.Cog):
     messages = await message.channel.history(limit=50).flatten()
     users = []
     for msg in messages:
-      if not msg.author.id == message.author.id or msg.author.bot:
+      if not(msg.author.id == message.author.id or msg.author.bot):
         users.append(msg.author.id)
     a = list(set(users))
     users = a[-4:]
@@ -73,6 +74,7 @@ class thank(commands.Cog):
 
   @commands.Cog.listener('on_message')
   async def on_message(self, message):
+    
         result = re.match('(?<!\w)(?:t(?:han[qk]s*|(?:hn?|h?n)x+|y(?:[sv]m)?)|danke)(?!\w)', message.content.lower())
         if result:
           await thank.thank(self, message)

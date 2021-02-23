@@ -5,7 +5,7 @@ from thank import thank
 import helpcmd
 import mathcmds
 import helperping
-from gitcmds import github
+from gitcmds import Github
 import os
 import pymongo
 import datetime
@@ -42,8 +42,10 @@ load_dotenv(find_dotenv())
 
 TOKEN = os.environ.get('TOKEN')
 
+print(TOKEN)
+
 bot.add_cog(util_commands(bot))
-bot.add_cog(github(bot))
+bot.add_cog(Github(bot))
 bot.add_cog(thank(bot))
 
 bot.run(TOKEN)

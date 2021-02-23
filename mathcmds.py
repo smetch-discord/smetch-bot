@@ -1,10 +1,13 @@
 import discord
 from discord.ext import commands
 
-class math_commands(commands.Cog):
+# class math_commands(commands.Cog):
 
-  def __init__(self, bot):
-      self.bot = bot
+#   def __init__(self, bot):
+#       self.bot = bot
+
+#   @commands.command(name='math')
+#   async def 
 
 async def linear_equations(message):
     embed = discord.Embed()

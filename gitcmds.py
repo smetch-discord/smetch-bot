@@ -5,7 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 repo = (github.Github(os.environ.get('GITHUB_TOKEN'))).get_organization('smetch-discord').get_repo('smetch-bot')
 
-class github(commands.Cog):
+class Github(commands.Cog):
 
   def __init__(self, bot):
     self.bot = bot
@@ -17,6 +17,7 @@ class github(commands.Cog):
       await confirmation.add_reaction('✅')
       try:
         await self.bot.wait_for('reaction_add', check=(lambda x, y: (str(x.emoji) == '✅') and (y.id == ctx.author.id)), timeout=45)
+        await confirmation.edit(embed=discord.Embed(color=0xaaffff, description="Thank you please check your DMs"))
         try:
           intro_dm = await ctx.author.send('**Thank you for taking the time to report an issue**\nWe greatly appreciate it!\nPlease could you enter a short title for the issue:')
           dm_channel_id = intro_dm.channel.id
