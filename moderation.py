@@ -23,7 +23,7 @@ class Moderation(commands.Cog):
             except discord.Forbidden:
               await ctx.send(embed=discord.Embed(color=0xff0000, description=f'Failed to contact <@{user.id}> successfully'))
             await user.ban(reason = reason)
-            await ctx.send(embed=discord.Embed(title=f'<@{user.id}> has been banned from SMETCH', description=reason, color = 0x00ff00))
+            await ctx.send(embed=discord.Embed(description = f'**<@{user.id}> has been banned from SMETCH\n{reason}', color = 0x00ff00))
             
     @ban.error         
     @kick.error
