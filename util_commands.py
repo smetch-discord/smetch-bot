@@ -36,13 +36,4 @@ class util_commands(commands.Cog):
     await ctx.send(embed=discord.Embed(title='__Support Us!__', color=0xf81ba0, description='To keep our server growing and have a bigger helping community, there are 2 ways to help us out! ✨\n<a:star_blue:809072328192688159> Vote on Top.GG.\nVote for us on: [Top.gg](https://top.gg/servers/806922773607874590).\nVoting is every 12 hours! You also get a special voter role when you do it.\n<a:star_blue:809072328192688159> Bump our Server on Disboard.\nGo to #bot-commands and type !d bump! If nobody has bumped the server yet, you can do the command.').add_field(name='To those considering being boosters 💫', value='<a:star_blue:809072328192688159> You will be given the <@&811577160522530837> role and your name will be put up in the online members list, making you stand out on the server chats.\n<a:star_blue:809072328192688159> You can choose to change your name colour.\n<a:star_blue:809072328192688159> You will be given a shoutout at the shoutouts channel as thanks for your support for the server.\n<a:star_blue:809072328192688159> You may add 2 Emojis of your choice to be added for use on this server (if slots are available).\n<a:star_blue:809072328192688159> You get access to a private channel for Boosters.\n<a:star_blue:809072328192688159> You will have priority in getting a tutor (feature to be implemented soon).\n<a:star_blue:809072328192688159> More Perks to be added!'))
     return
   
-  @commands.command(name='advanced')
-  async def advanced(self, ctx, members: commands.Greedy[discord.Member]):
-    staff_role, advanced_math_role = ctx.guild.get_role(808099724904759297), ctx.guild.get_role(809184355485351966)
-    if staff_role not in ctx.author.roles:
-      await ctx.send('You do not have the power to execute this command yet')
-      return
-    for member in members:
-      await member.add_roles(advanced_math_role)
-      await ctx.send(f'Advanced math role has been given to <@{member.id}>')
-    return
+

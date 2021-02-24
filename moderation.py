@@ -33,3 +33,11 @@ class Moderation(commands.Cog):
         else:
             raise error
 
+    @commands.has_permissions(manage_roles=True)
+    @commands.command(name='advanced')
+    async def advanced(self, ctx, members: commands.Greedy[discord.Member]):
+        advanced_math_role = ctx.guild.get_role(809184355485351966)
+        for member in members:
+            await member.add_roles(advanced_math_role)
+            await ctx.send(f'Advanced math role has been given to <@{member.id}>')
+        return
