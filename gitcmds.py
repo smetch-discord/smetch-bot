@@ -64,7 +64,7 @@ class Github(commands.Cog):
     elif method.lower() == 'list':
       issues = ''
       if repo.get_issues().totalCount == 0:
-        ctx.send(embed=discord.Embed(title='There are currently no issues on SMETCH Bot'))
+        await ctx.send(embed=discord.Embed(title='There are currently no issues on SMETCH Bot'))
         return
       for issue in repo.get_issues():
         issues += f'**{" ".join(issue.title.split()[:-2])}**\nIssue created by **{issue.title.split("#")[-2].split()[-1]}#{issue.title.split("#") [-1]}** on **{issue.created_at.strftime("%d/%m/%Y")}**\nFor more info on this issue click [here]({issue.html_url})\n*This is issue #{issue.number}*\n\n'

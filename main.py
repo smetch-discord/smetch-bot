@@ -9,6 +9,7 @@ from gitcmds import Github
 import os
 import pymongo
 import datetime
+from moderation import Moderation
 from discord.ext import tasks, commands
 from dotenv import load_dotenv, find_dotenv
 
@@ -47,5 +48,6 @@ print(TOKEN)
 bot.add_cog(util_commands(bot))
 bot.add_cog(Github(bot))
 bot.add_cog(thank(bot))
+bot.add_cog(Moderation(bot))
 
 bot.run(TOKEN)
