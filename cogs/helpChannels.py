@@ -49,6 +49,7 @@ class HelpChannels(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
+        if isinstance(message.channel, discord.DMChannel): return
         if not message.channel.category or message.author.bot: return
         if not message.channel.category.id == self.free: return
         occupied = self.bot.get_channel(self.occupied)
