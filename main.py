@@ -9,7 +9,10 @@ from discord.ext import commands
 
 config = Data("config").yaml_read()
 
-bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_command=None, intents=discord.Intents.all())
+intents = discord.Intents.default()
+intents.members = True
+
+bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_command=None, intents=intents)
 
 @bot.event
 async def on_ready():
