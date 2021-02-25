@@ -1,55 +1,118 @@
-import discord
-import keep_alive
-from util_commands import util_commands
-from thank import thank
-import helpcmd
-import mathcmds
-import helperping
-from gitcmds import Github
-import os
-import pymongo
-import datetime
-from help_channels import Help_Channels
-from moderation import Moderation
-from discord.ext import tasks, commands
-from dotenv import load_dotenv, find_dotenv
+import discord, os, textwrap, io, traceback
 
-bot = commands.AutoShardedBot(command_prefix='!')
+from contextlib import redirect_stdout
 
-db = pymongo.MongoClient(os.environ.get('MONGO_URI')).SMETCH
-bot.current = datetime.datetime.now().date().day
-bot.week_check = datetime.date.today().isocalendar()[1]
+from core.files import Data
+from core import checks
 
-# instead of this, set something on init
-@tasks.loop(seconds=1)
-async def resetter(bot):
-  # sounds like a really bad idea right?
-  if datetime.datetime.now().date().day != bot.current:
-    db = pymongo.MongoClient(os.environ.get('MONGO_URI')).SMETCH
-    db.data.update_many({}, {'$set': {'daily_thanks': 0}})
-    if datetime.date.today().isocalendar()[1] != bot.week_check:
-      db.data.update_many({}, {'$set': {'daily_thanks': 0}})
-      bot.week_check = datetime.date.today().isocalendar()[1]
-  bot.current = datetime.datetime.now().date().day
-    
+from discord.ext import commands
+
+config = Data("config").yaml_read()
+
+bot = commands.Bot(command_prefix=config["prefix"], case_insensitive=True, help_command=None, intents=discord.Intents.all())
+
 @bot.event
 async def on_ready():
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='SMETCH Vibes'))
-  print('Logged in')
-  resetter.start(bot)
+    print("Bot is ready!")
 
-keep_alive.keep_alive()
+@checks.manager()
+@bot.command(aliases=["e"])
+async def eval(ctx, *, body: str):
+    raw = False
+    """Evaluates a code"""
 
-load_dotenv(find_dotenv())
+    env = {
+        'bot': bot,
+        'ctx': ctx,
+        'channel': ctx.message.channel,
+        'author': ctx.message.author,
+        'guild': ctx.message.guild,
+        'message': ctx.message,
+       }
 
-TOKEN = os.environ.get('TOKEN')
+    env.update(globals())
 
-print(TOKEN)
+    stdout = io.StringIO()
 
-bot.add_cog(util_commands(bot))
-bot.add_cog(Github(bot))
-bot.add_cog(thank(bot))
-bot.add_cog(Help_Channels(bot))
-bot.add_cog(Moderation(bot))
+    to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
 
-bot.run(TOKEN)
+    try:
+        exec(to_compile, env)
+    except Exception as e:
+        return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+
+    func = env['func']
+    try:
+        with redirect_stdout(stdout):
+          ret = await func()
+    except Exception:
+        value = stdout.getvalue()
+        await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+    else:
+        value = stdout.getvalue()
+        try:
+            await ctx.message.add_reaction('\u2705')
+        except:
+            pass
+
+        if ret is None:
+            if value:
+                if raw:
+                  await ctx.send(f"{value}")
+                else:
+                  await ctx.send(f'```py\n{value}\n```')
+        else:
+            pass
+
+@checks.manager()
+@bot.command(hidden=True)
+async def load(ctx, *, module):
+    try:
+      bot.load_extension(f"cogs.{module}")
+    except commands.ExtensionError as e:
+      await ctx.send(f'{e.__class__.__name__}: {e}')
+    else:
+      embed=discord.Embed(title=f"Loaded {str(module).capitalize()}", description=f"Successfully loaded cogs.{str(module).lower()}!", color=0x2cf818)
+      await ctx.send(embed=embed)
+
+@checks.manager()
+@bot.command(hidden=True)
+async def unload(ctx, *, module):
+    try:
+      bot.unload_extension(f"cogs.{module}")
+    except commands.ExtensionError as e:
+      await ctx.send(f'{e.__class__.__name__}: {e}')
+    else:
+      embed=discord.Embed(title=f"Unloaded {str(module).capitalize()}", description=f"Successfully unloaded cogs.{str(module).lower()}!", color=0xeb1b2c)
+      await ctx.send(embed=embed)
+
+@checks.manager()
+@bot.command(name="reload", hidden=True)
+async def _reload(ctx, *, module):
+    try:
+      bot.reload_extension(f"cogs.{module}")
+    except commands.ExtensionError as e:
+      await ctx.send(f'{e.__class__.__name__}: {e}')
+    else:
+      embed=discord.Embed(title=f"Reloaded {str(module).capitalize()}", description=f"Successfully reloaded cogs.{str(module).lower()}!", color=0x00d4ff)
+      await ctx.send(embed=embed)
+
+for file in [i for i in os.listdir("cogs") if i.endswith(".py")]:
+    try:
+        bot.load_extension(f"cogs.{file[:-3]}")
+        print(f"Loaded {file}")
+    except Exception as e:
+        print(f"######\nFailed to load {file}: {e}\n######")
+        
+
+dirs = [i for i in [x for x in os.walk("cogs")][0][1] if i.find(".") == -1]
+
+for folder in dirs:
+  for file in [i for i in os.listdir(f"cogs/{folder}") if i.endswith(".py")]:
+      try:
+          bot.load_extension(f"cogs.{folder}.{file[:-3]}")
+          print(f"Loaded {file}")
+      except Exception as e:
+          print(f"######\nFailed to load {folder}.{file}: {e}\n######")
+
+bot.run(config["token"])
