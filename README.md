@@ -8,7 +8,7 @@ This is the server bot for the [SMETCH](https://discord.gg/3bhmFtx9UM) server.
 
 1. `!acd` => Reminds people not to commit academic dishonesty and provides a link as well
 2. `!justask` => Reminds people not to 'just ask' and provides a link
-3. `!multipost` -> Reminds people to not post their question in multiple channels
+3. `!multipost` => Reminds people to not post their question in multiple channels
 4. `!ping` => Returns bot latency
 5. `!remind` =>  Reminds people that a thank would be much appreciated after a helper has helped them
 6. `!support` => Lists all the ways you can help the server and shows all boosting perks
