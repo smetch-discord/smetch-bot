@@ -1,9 +1,13 @@
 import github, os, asyncio, discord
-from discord.ext import commands
-from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
-repo = (github.Github(os.environ.get('GITHUB_TOKEN'))).get_organization('smetch-discord').get_repo('smetch-bot')
+from core.files import Data
+from core import embeds
+
+commands = discord.ext.commands
+
+config = Data("config").yaml_read()
+
+repo = (github.Github(config["github"])).get_organization('smetch-discord').get_repo('smetch-bot')
 
 class Github(commands.Cog):
 
@@ -76,5 +80,5 @@ class Github(commands.Cog):
     await ctx.send(embed=discord.Embed(description=f'I am currently operating on {repo.get_releases()[0].tag_name}'))
     return
 
-
-
+def setup(bot):
+  bot.add_cog(Github(bot))
