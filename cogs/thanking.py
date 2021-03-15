@@ -118,7 +118,7 @@ class Thanking(commands.Cog):
                 await msg.remove_reaction(reaction.emoji, ctx.author)
             except: pass
 
-            await ctx.send(embed=discord.Embed(
+            await msg.edit(embed=discord.Embed(
             title=f"Thanking Leaderboard | {timespan.capitalize()}",
             description='\n'.join(f"**#{pages[current_page].index(i)+1}** ‣ {ctx.guild.get_member(i['_id']).mention} **with** {i[f'thanks_{timespan}']} thanks" for i in pages[current_page]),
             color=discord.Color.purple()
