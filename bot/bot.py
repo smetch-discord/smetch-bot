@@ -5,6 +5,8 @@ from discord.ext import commands
 # Filter out info to include warnings and above in order to not clog bot.log
 discord_log = logging.getLogger('discord')
 discord_log.setLevel(logging.WARNING)
+asyncio_log = logging.getLogger('asyncio')
+asyncio_log.setLevel(logging.WARNING)
 
 # Set up logging
 logging.basicConfig(
