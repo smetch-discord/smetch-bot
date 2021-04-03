@@ -18,11 +18,16 @@ except FileNotFoundError:
     log.exception('Missing config.yml found')
 
 # Parse YAML file
-config: dict = yaml.safe_load(config_file)
-log.info('Successfully parsed the config.yml file')
+try:
+    config: dict = yaml.safe_load(config_file)
+    log.info('Successfully parsed the config.yml file')
+except Exception:
+    log.critical("Failed to parse config.yml for an unknown reason")
+    log.exception("Failed YAML parsing", exc_info=True)
 
 # Define constants for use in the bot
-BOT_TOKEN: str = config.__getitem__('bot-token')
-MONGO_URI: str = config.__getitem__('mongo-uri')
-GITHUB_TOKEN: str = config.__getitem__('github-token')
-log.info('Loaded all constants')
+try:
+    BOT_TOKEN: str = config.__getitem__('bot-token')
+except KeyError:
+    log.critical("Missing 'bot-token' field from config.yml file. Please insert this field immediately")
+    log.exception("Missing bot token", exc_info=True)
