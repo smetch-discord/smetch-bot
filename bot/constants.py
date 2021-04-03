@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger(__name__)
 
 # Load all configuration constants from file
-config_file: io.TextIOWrapper = io.open('config.yaml')
+config_file: io.TextIOWrapper = io.open('config.yml')
 log.info('Successfully openeed the config.yaml file')
 
 # Parse YAML file
