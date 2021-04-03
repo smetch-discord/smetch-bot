@@ -1,1 +1,1 @@
-Because I honestly cannot work with the code I'll just make a rewrite version of it, dw I'll get the mute command working ASAP.
+# Rewrite version of the bot
