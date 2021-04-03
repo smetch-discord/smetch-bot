@@ -19,5 +19,5 @@ python_version = "3.9"
 [scripts]
 lint = "pre-commit run --all-files"
 pre-commit = "pre-commit install"
-fix = "autopep8 --in-place --recursive ."
+fix = "autopep8 --in-place --ignore=E402 --recursive ."
 bot = "python3 bot/bot.py"

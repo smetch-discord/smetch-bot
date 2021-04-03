@@ -15,7 +15,7 @@ repos:
       - id: flake8
         name: Flake8
         description: Runs flake8 linting
-        entry: pipenv run flake8 --config tox.ini
+        entry: pipenv run flake8 --config tox.ini --ignore=E402
         language: system
         types: [python]
       - id: autopep8
