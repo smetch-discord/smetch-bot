@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 # Load all configuration constants from file
 config_file: io.TextIOWrapper = io.open('config.yml')
-log.info('Successfully openeed the config.yaml file')
+log.info('Successfully opened the config.yaml file')
 
 # Parse YAML file
 config: dict = yaml.safe_load(config_file)
