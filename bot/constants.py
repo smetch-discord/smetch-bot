@@ -5,29 +5,42 @@ import logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-# Load all configuration constants from file
-try:
-    config_file: io.TextIOWrapper = io.open('config.yml')
-    log.info('Successfully opened the config.yml file')
-except FileNotFoundError:
-    log.critical(
-        "No config.yml file was found. \
-        Please make sure the file is called 'config.yml'. \
-        Make sure it is in the top level directory."
-    )
-    log.exception('Missing config.yml found')
 
-# Parse YAML file
-try:
-    config: dict = yaml.safe_load(config_file)
-    log.info('Successfully parsed the config.yml file')
-except Exception:
-    log.critical("Failed to parse config.yml for an unknown reason")
-    log.exception("Failed YAML parsing", exc_info=True)
+def load_config_file(config_filename: str = 'config.yml'):
+    '''Load all configuration constants from file'''
+    try:
+        config_file: io.TextIOWrapper = io.open(config_filename)
+        log.info(f'Successfully opened the {config_filename} file')
+        return config_file
+    except FileNotFoundError:
+        log.critical(
+            f"No {config_filename} file was found. \
+            Please make sure the file is called '{config_filename}'. \
+            Make sure it is in the top level directory."
+        )
+        log.exception(f'Missing {config_filename}', exc_info=True)
 
-# Define constants for use in the bot
-try:
-    BOT_TOKEN: str = config.__getitem__('bot-token')
-except KeyError:
-    log.critical("Missing 'bot-token' field from config.yml file. Please insert this field immediately")
-    log.exception("Missing bot token", exc_info=True)
+
+def parse_config_file(config_file: io.TextIOWrapper):
+    '''Parse the config file into a dictionary'''
+    try:
+        config: dict = yaml.safe_load(config_file)
+        log.info('Successfully parsed the config file')
+        return config
+    except Exception:
+        log.critical('Failed to parse the config file for an unknown reason')
+        log.exception('Failed YAML parsing', exc_info=True)
+
+
+def load_configuration(config_filename: str = 'config.yml'):
+    config_file = load_config_file(config_filename)
+    config_dict = parse_config_file(config_file)
+
+    try:
+        config_dict.__getitem__('bot-token')
+        log.info("Successfully loaded all required constants: 'bot-token'")
+    except KeyError:
+        log.critical(f'Missing bot token from {config_filename}')
+        log.exception('Missing bot token', exc_info=True)
+
+    return config_dict

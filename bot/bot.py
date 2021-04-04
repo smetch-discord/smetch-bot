@@ -1,9 +1,10 @@
-from constants import BOT_TOKEN
+from constants import load_configuration
 from discord.ext import commands
 import logging
 from log_setup import log_setup
-log_setup()
 
+log_setup()
+constant = load_configuration()
 
 # Filter out info to include warnings and above in order to not clog bot.log
 discord_log = logging.getLogger('discord')
@@ -29,4 +30,4 @@ async def test(ctx):
     await ctx.send('This is a test command')
 
 # Run the bot
-bot.run(BOT_TOKEN)
+bot.run(constant['BOT_TOKEN'])

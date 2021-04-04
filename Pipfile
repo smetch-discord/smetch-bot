@@ -15,10 +15,10 @@ autopep8 = "*"
 pytest = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
 
 [scripts]
 lint = "pre-commit run --all-files"
 pre-commit = "pre-commit install"
-fix = "autopep8 --in-place --ignore=E402 --recursive ."
+fix = "autopep8 --in-place --recursive ."
 bot = "python3 bot/bot.py"
