@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+        name: Check all YAML files
+      - id: end-of-file-fixer
+        name: Makes sure EOF complies with rules
+      - id: trailing-whitespace
+        name: Eliminate trailing whitespace
+      - id: double-quote-string-fixer
+        name: All quotes should be single
+      - id: check-ast
+        name: Python Syntax Check
+      - id: check-docstring-first
+        name: Make sure docstrings come first
+
+  - repo: local
+    hooks:
+      - id: flake8
+        name: Flake8
+        description: Runs flake8 linting
+        entry: pipenv run flake8 --config tox.ini
+        language: system
+        types: [python]
+      - id: autopep8
+        name: PEP 8 Formatting
+        description: Formats the code to conform to style guidelines
+        entry: pipenv run fix
+        language: system
+        types: [python]
