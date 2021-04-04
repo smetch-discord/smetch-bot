@@ -6,6 +6,12 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
+class Constants:
+
+    def __init__(self, bot) -> None:
+        self.bot = bot
+
+
 class Bot:
 
     def __init__(self, prefix: str, token: str) -> None:
@@ -62,6 +68,16 @@ def load_configuration(config_filename: str = 'config.yml'):
         new_key = yaml_key.upper().replace('-', '_')
         config[new_key] = config_dict[yaml_key]
 
-    del config_dict
-
     return config
+
+
+def get_constants(config_filename: str = 'config.yml'):
+    config = load_configuration(config_filename)
+    constants = Constants(
+        bot=Bot(
+            prefix=config['PREFIX'],
+            token=config['BOT_TOKEN']
+        ),
+
+    )
+    return constants
