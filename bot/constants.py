@@ -6,6 +6,14 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
+class Bot:
+
+    def __init__(self, prefix: str, token: str) -> None:
+        self.prefix = prefix
+        self.token = token
+        return
+
+
 def load_config_file(config_filename: str = 'config.yml'):
     '''Load all configuration constants from file'''
     try:
@@ -38,13 +46,16 @@ def load_configuration(config_filename: str = 'config.yml'):
     config_file = load_config_file(config_filename)
     config_dict = parse_config_file(config_file)
 
-    try:
-        config_dict.__getitem__('bot-token')
-        log.info("Successfully loaded all required constants: 'bot-token'")
-    except KeyError as err:
-        log.critical(f'Missing bot token from {config_filename}')
-        log.exception('Missing bot token', exc_info=True)
-        raise err
+    required: list = ['bot-token', 'prefix']
+
+    for key in required:
+        try:
+            config_dict.__getitem__(key)
+            log.info(f'Successfully loaded the required constant: \'{key}\'')
+        except KeyError as err:
+            log.critical(f'Missing {key} from {config_filename}')
+            log.exception(f'Missing {key}', exc_info=True)
+            raise err
 
     config = {}
     for yaml_key in config_dict.keys():

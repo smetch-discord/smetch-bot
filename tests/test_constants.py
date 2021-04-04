@@ -4,18 +4,20 @@ import pytest
 
 
 def test_load_config_file():
-    temp_yaml = MockYAMLConfig()
+    mock_yaml = MockYAMLConfig()
     config = load_configuration('test_config.yml')
     assert config == {
-            'BOT_TOKEN': 'bOt-ToKeN-gOeS-hErE',
-            'MONGO_URI': 'mongodb+srv://db_uri.com',
-            'GITHUB_TOKEN': 'gItHuB-tOkEn-GoEs-HeRe'
+        'BOT_TOKEN': 'bOt-ToKeN-gOeS-hErE',
+        'MONGO_URI': 'mongodb+srv://db_uri.com',
+        'GITHUB_TOKEN': 'gItHuB-tOkEn-GoEs-HeRe',
+        'PREFIX': 's!'
     }
-    temp_yaml.destroy()
+    mock_yaml.destroy()
 
 
-def test_load_configuration():
-    temp_yaml = MockYAMLConfig('bot-token')
+@pytest.mark.parametrize('missing', ['bot-token', 'prefix'])
+def test_load_configuration(missing):
+    mock_yaml = MockYAMLConfig(missing)
     with pytest.raises(KeyError):
         load_configuration('test_config.yml')
-    temp_yaml.destroy()
+    mock_yaml.destroy()

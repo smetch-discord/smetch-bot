@@ -13,7 +13,7 @@ asyncio_log = logging.getLogger('asyncio')
 asyncio_log.setLevel(logging.WARNING)
 
 # Set up logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
 # Initialise bot
