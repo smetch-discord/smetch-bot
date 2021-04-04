@@ -16,8 +16,10 @@ class MockYAMLConfig:
         for key in missing:
             yaml_keys.pop(key, None)
 
-        with io.open(self.filename) as yaml_file:
+        yaml_file = io.open(self.filename, 'w')
+
+        with io.open(self.filename, 'w') as yaml_file:
             yaml.dump(yaml_keys, yaml_file, default_flow_style=False)
 
-    def remove(self):
+    def destroy(self):
         os.remove(self.filename)

@@ -3,12 +3,17 @@ repos:
     rev: v2.3.0
     hooks:
       - id: check-yaml
-      - id: check-toml
+        name: Check all YAML files
       - id: end-of-file-fixer
+        name: Makes sure EOF complies with rules
       - id: trailing-whitespace
+        name: Eliminate trailing whitespace
       - id: double-quote-string-fixer
+        name: All quotes should be single
       - id: check-ast
+        name: Python Syntax Check
       - id: check-docstring-first
+        name: Make sure docstrings come first
 
   - repo: local
     hooks:
