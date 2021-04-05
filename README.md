@@ -8,7 +8,7 @@ This is the server bot for SMETCH
 3. Run `pipenv shell`
 4. Run `pipenv install`
 5. Add a file called `config.yml` and add the necessary fields:
-    - **Required**: `bot-token`
+    - **Required**: `bot-token`, `prefix`
     - **Optional**(at least should be): `mongo-uri`, `github-token`
     example config file
     ```yml
