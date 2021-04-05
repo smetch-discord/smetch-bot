@@ -8,8 +8,9 @@ log.setLevel(logging.DEBUG)
 
 class Constants:
 
-    def __init__(self, bot) -> None:
+    def __init__(self, bot, color) -> None:
         self.bot = bot
+        self.color = color
 
 
 class Bot:
@@ -18,6 +19,18 @@ class Bot:
         self.prefix = prefix
         self.token = token
         return
+
+
+class Color:
+
+    def __init__(self, color_dict) -> None:
+        for key in color_dict.keys():
+            current_hex = color_dict[key]
+            current_hex.replace('#', '0x')
+            color_dict[key] = hex(current_hex)
+
+        for key in color_dict.keys():
+            setattr(self, key, color_dict[key])
 
 
 def load_config_file(config_filename: str = 'config.yml'):
@@ -78,6 +91,8 @@ def get_constants(config_filename: str = 'config.yml'):
             prefix=config['PREFIX'],
             token=config['BOT_TOKEN']
         ),
-
+        color=Color(
+            color_dict=config['COLOR']
+        )
     )
     return constants

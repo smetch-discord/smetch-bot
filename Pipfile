@@ -15,7 +15,7 @@ autopep8 = "*"
 pytest = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
 
 [scripts]
 lint = "pre-commit run --all-files"
