@@ -24,13 +24,12 @@ class Bot:
 class Color:
 
     def __init__(self, color_dict) -> None:
-        for key in color_dict.keys():
-            current_hex = color_dict[key]
-            current_hex.replace('#', '0x')
-            color_dict[key] = hex(current_hex)
-
-        for key in color_dict.keys():
-            setattr(self, key, color_dict[key])
+        for color in color_dict:
+            for color_name in color:
+                current_hex = color[color_name]
+                current_hex = current_hex.replace('#', '0x')
+                color[color_name] = hex(int(current_hex, 16))
+                setattr(self, color_name, color[color_name])
 
 
 def load_config_file(config_filename: str = 'config.yml'):
@@ -77,7 +76,7 @@ def load_configuration(config_filename: str = 'config.yml'):
             raise err
 
     config = {}
-    for yaml_key in config_dict.keys():
+    for yaml_key in config_dict:
         new_key = yaml_key.upper().replace('-', '_')
         config[new_key] = config_dict[yaml_key]
 
