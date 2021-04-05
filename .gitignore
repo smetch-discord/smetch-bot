@@ -134,3 +134,8 @@ dmypy.json
 .pyre/
 .vscode/settings.json
 data/config.yml
+
+# Editing environments
+.vscode
+.replit
+.idea
