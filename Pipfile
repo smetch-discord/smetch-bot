@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 discord = "*"
 pyyaml = "*"
-logging = "*"
 
 [dev-packages]
 flake8 = "*"

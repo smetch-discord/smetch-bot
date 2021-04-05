@@ -2,14 +2,12 @@ from constants import get_constants
 from discord.ext import commands
 import logging
 from log_setup import log_setup
-from exts.utils.utils import Utility
+from exts.backend.error_handler import ErrorHandler
 
 log_setup()
 constants = get_constants()
 
 # Filter out info to include warnings and above in order to not clog bot.log
-discord_log = logging.getLogger('discord')
-discord_log.setLevel(logging.WARNING)
 asyncio_log = logging.getLogger('asyncio')
 asyncio_log.setLevel(logging.WARNING)
 
@@ -25,9 +23,7 @@ bot = commands.Bot(command_prefix=constants.bot.prefix)
 async def on_ready():
     logger.info('Bot is running')
 
-bot.add_cog(Utility(bot))
-
-print(bot.cogs)
+bot.add_cog(ErrorHandler(bot))
 
 # Run the bot
 bot.run(constants.bot.token)
