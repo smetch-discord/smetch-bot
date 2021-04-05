@@ -2,6 +2,7 @@ from constants import get_constants
 from discord.ext import commands
 import logging
 from log_setup import log_setup
+from exts.utils.utils import Utility
 
 log_setup()
 constants = get_constants()
@@ -24,10 +25,9 @@ bot = commands.Bot(command_prefix=constants.bot.prefix)
 async def on_ready():
     logger.info('Bot is running')
 
+bot.add_cog(Utility(bot))
 
-@bot.command(name='test')
-async def test(ctx):
-    await ctx.send('This is a test command')
+print(bot.cogs)
 
 # Run the bot
 bot.run(constants.bot.token)
