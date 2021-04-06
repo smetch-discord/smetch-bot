@@ -12,9 +12,9 @@ This is the server bot for SMETCH
     - **Optional**(at least should be): `mongo-uri`, `github-token`
     example config file
     ```yml
-    bot-token: 
-    mongo-uri: 
-    github-token: 
+    bot-token:
+    mongo-uri:
+    github-token:
     ```
     > if you somehow update .gitignore, make sure `config.yaml` is included
 6. Run `pipenv run pre-commit`

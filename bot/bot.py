@@ -5,7 +5,6 @@ from log_setup import log_setup
 from exts.backend.error_handler import ErrorHandler
 
 log_setup()
-constants = get_constants()
 
 # Filter out info to include warnings and above in order to not clog bot.log
 asyncio_log = logging.getLogger('asyncio')
@@ -16,7 +15,9 @@ logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
 # Initialise bot
-bot = commands.Bot(command_prefix=constants.bot.prefix)
+bot = commands.Bot(command_prefix='s!')
+
+constants = get_constants(bot)
 
 
 @bot.event

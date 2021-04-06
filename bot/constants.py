@@ -1,6 +1,8 @@
 import yaml
 import io
 import logging
+from discord.utils import get
+from discord.ext.commands import Bot
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -13,7 +15,7 @@ class Constants:
         self.color = color
 
 
-class Bot:
+class SmetchBot:
 
     def __init__(self, prefix: str, token: str) -> None:
         self.prefix = prefix
@@ -24,12 +26,24 @@ class Bot:
 class Color:
 
     def __init__(self, color_dict) -> None:
-        for color in color_dict:
-            for color_name in color:
-                current_hex = color[color_name]
-                current_hex = current_hex.replace('#', '0x')
-                color[color_name] = hex(int(current_hex, 16))
-                setattr(self, color_name, color[color_name])
+        color = color_dict[0]
+        for color_name in color:
+            current_hex = color[color_name]
+            current_hex = current_hex.replace('#', '0x')
+            color[color_name] = hex(int(current_hex, 16))
+            setattr(self, color_name, color[color_name])
+
+
+class Roles:
+
+    def __init__(self, bot: Bot, roles: dict) -> None:
+        for role in roles:
+            discord_role = get(bot.guilds[0].roles, roles[role])
+            if discord_role is None:
+                continue
+            else:
+                setattr(self, role.lower(), discord_role)
+        return
 
 
 def load_config_file(config_filename: str = 'config.yml'):
@@ -83,7 +97,7 @@ def load_configuration(config_filename: str = 'config.yml'):
     return config
 
 
-def get_constants(config_filename: str = 'config.yml'):
+def get_constants(bot: Bot, config_filename: str = 'config.yml'):
     config = load_configuration(config_filename)
     constants = Constants(
         bot=Bot(
@@ -92,6 +106,10 @@ def get_constants(config_filename: str = 'config.yml'):
         ),
         color=Color(
             color_dict=config['COLOR']
-        )
+        ),
+        roles=Roles(
+            bot=bot,
+            roles=config['ROLES']
+            )
     )
     return constants
