@@ -1,12 +1,14 @@
-from constants import get_constants
-from discord.ext import commands
+from constants import get_constants, Constants
+from discord.ext.commands import Bot
+from discord import Intents
 import logging
 from log_setup import log_setup
-from exts.backend.error_handler import ErrorHandler
 
 log_setup()
 
 # Filter out info to include warnings and above in order to not clog bot.log
+discord_log = logging.getLogger('discord')
+discord_log.setLevel(logging.WARNING)
 asyncio_log = logging.getLogger('asyncio')
 asyncio_log.setLevel(logging.WARNING)
 
@@ -14,17 +16,20 @@ asyncio_log.setLevel(logging.WARNING)
 logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
-# Initialise bot
-bot = commands.Bot(command_prefix='s!')
+# Set intents
+intents = Intents.default()
 
-constants = get_constants(bot)
+# Initialise bot
+bot = Bot(command_prefix='s!', intents=intents)
+
+constants: Constants = get_constants(bot)
+
+bot.load_extension('exts.moderation.moderation')
 
 
 @bot.event
 async def on_ready():
     logger.info('Bot is running')
-
-bot.add_cog(ErrorHandler(bot))
 
 # Run the bot
 bot.run(constants.bot.token)

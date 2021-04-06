@@ -1,18 +1,11 @@
 import yaml
 import io
 import logging
-from discord.utils import get
 from discord.ext.commands import Bot
+from exts.backend.database import Database
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-
-class Constants:
-
-    def __init__(self, bot, color) -> None:
-        self.bot = bot
-        self.color = color
 
 
 class SmetchBot:
@@ -25,24 +18,28 @@ class SmetchBot:
 
 class Color:
 
-    def __init__(self, color_dict) -> None:
-        color = color_dict[0]
-        for color_name in color:
-            current_hex = color[color_name]
-            current_hex = current_hex.replace('#', '0x')
-            color[color_name] = hex(int(current_hex, 16))
-            setattr(self, color_name, color[color_name])
+    def __init__(self, color_list: list[dict]) -> None:
+        for color_dict in color_list:
+            setattr(self, color_dict.keys()[0], color_dict[color_dict.keys()[0]])
+            log.info(f'Loaded color {color_dict.keys()[0]} as: {color_dict[color_dict.keys()[0]]}')
 
 
 class Roles:
 
     def __init__(self, bot: Bot, roles: dict) -> None:
+        roles = roles[0]
         for role in roles:
-            discord_role = get(bot.guilds[0].roles, roles[role])
-            if discord_role is None:
-                continue
-            else:
-                setattr(self, role.lower(), discord_role)
+            setattr(self, role, roles[role])
+        return
+
+
+class Constants:
+
+    def __init__(self, bot: SmetchBot, color: Color, roles: Roles, database: Database) -> None:
+        self.bot = bot
+        self.color = color
+        self.roles = roles
+        self.database = database
         return
 
 
@@ -100,16 +97,19 @@ def load_configuration(config_filename: str = 'config.yml'):
 def get_constants(bot: Bot, config_filename: str = 'config.yml'):
     config = load_configuration(config_filename)
     constants = Constants(
-        bot=Bot(
+        bot=SmetchBot(
             prefix=config['PREFIX'],
             token=config['BOT_TOKEN']
         ),
         color=Color(
-            color_dict=config['COLOR']
+            color_list=config['COLOR']
         ),
         roles=Roles(
             bot=bot,
             roles=config['ROLES']
-            )
+        ),
+        database=Database(
+            uri=config['MONGO_URI']
+        )
     )
     return constants
