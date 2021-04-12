@@ -1,35 +1,28 @@
-from constants import get_constants, Constants
-from discord.ext.commands import Bot
-from discord import Intents
-import logging
-from log_setup import log_setup
+from discord.ext.commands import Bot, Context
+from discord import Embed
+from datetime import datetime
 
-log_setup()
-
-# Filter out info to include warnings and above in order to not clog bot.log
-discord_log = logging.getLogger('discord')
-discord_log.setLevel(logging.WARNING)
-asyncio_log = logging.getLogger('asyncio')
-asyncio_log.setLevel(logging.WARNING)
-
-# Set up logging
-logger = logging.getLogger('main')
-logger.setLevel(logging.DEBUG)
-
-# Set intents
-intents = Intents.default()
-
-# Initialise bot
-bot = Bot(command_prefix='s!', intents=intents)
-
-constants: Constants = get_constants(bot)
-
-bot.load_extension('exts.moderation.moderation')
+bot: Bot = Bot('lol ', help_command=None)
 
 
-@bot.event
-async def on_ready():
-    logger.info('Bot is running')
+@bot.command()
+async def ping(ctx: Context):
+    bot_ping = (datetime.utcnow() - ctx.message.created_at).total_seconds() * 1000
+    bot_ping: str = f'{bot_ping:.3f} ms'
+    discord_ping: str = f'{bot.latency * 1000:.3f} ms'
 
-# Run the bot
-bot.run(constants.bot.token)
+    embed: Embed = Embed(
+        title='Ping!'
+    )
+
+    for description, latency in zip(['Command Processing Time', 'Discord API Latency'], [bot_ping, discord_ping]):
+        embed.add_field(
+            name=description,
+            value=latency,
+            inline=False
+        )
+
+    await ctx.send(embed=embed)
+    return
+
+bot.run('ODA4MjgyNzEyMzY3NTYyNzYy.YCER7w.bRD1xhdUtJWdcI5TYhJ9CkVoJ7Q')

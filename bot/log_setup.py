@@ -2,6 +2,9 @@ import logging
 
 
 def log_setup():
+    '''
+    Sets up basic logging
+    '''
     __name__ = 'log_setup'
     logging.basicConfig(
         filename='bot.log',
