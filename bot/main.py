@@ -6,7 +6,7 @@ intents = Intents.default()
 intents.members = True
 intents.presences = True
 
-bot: Bot = Bot('lol ', help_command=None, intents=intents)
+bot: Bot = Bot('lol ', intents=intents)
 
 config = safe_load(open('config.yml'))
 
