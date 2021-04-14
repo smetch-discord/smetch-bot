@@ -12,7 +12,7 @@ class ErrorHandler(Cog):
     '''
 
     def __init__(self, bot: Bot) -> None:
-        self.bot = bot
+        self.bot: Bot = bot
         return
 
     @Cog.listener()

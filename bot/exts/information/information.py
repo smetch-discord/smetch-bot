@@ -17,7 +17,7 @@ class Information(Cog):
     '''
 
     def __init__(self, bot: Bot) -> None:
-        self.bot = bot
+        self.bot: Bot = bot
         return
 
     @command(description='Returns bot latency')
