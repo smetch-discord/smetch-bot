@@ -1,9 +1,9 @@
-from discord.ext.commands import Cog, Bot, Context, Command
+from discord.ext.commands import Cog, Bot, Context, command
 from discord import Embed
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from ...utils.time import humanize_delta
+from utils.time import humanize_delta
 
 
 class Information(Cog):
@@ -11,7 +11,7 @@ class Information(Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @Command(description='Returns bot latency')
+    @command(description='Returns bot latency')
     async def ping(self, ctx: Context):
         bot_ping = (datetime.utcnow() - ctx.message.created_at).total_seconds() * 1000
         bot_ping: str = f'{bot_ping:.3f} ms'
@@ -32,7 +32,7 @@ class Information(Cog):
         await ctx.send(embed=embed)
         return
 
-    @Command(description='Returns information about the server')
+    @command(description='Returns information about the server')
     async def server(self, ctx: Context):
         guild = ctx.message.guild
         embed = Embed(
@@ -85,4 +85,4 @@ class Information(Cog):
 
 
 def setup(bot: Bot):
-    bot.add_cog(Information)
+    bot.add_cog(Information(bot))
