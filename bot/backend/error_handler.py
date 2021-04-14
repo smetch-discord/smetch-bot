@@ -29,7 +29,7 @@ class ErrorHandler(Cog):
 
     async def get_tag(self, ctx: Context):
         '''
-        Attempt to get a tag from the `resources/tags` folder.
+        Attempts to get a tag from the `resources/tags` folder.
         Then adds the markdown to an `Embed` object with:
         - Title: name of the tag's markdown file
         - Description: content of the tag's markdown file
@@ -39,7 +39,7 @@ class ErrorHandler(Cog):
 
     async def suggest_similar_command(self, ctx: Context, command_name: str) -> None:
         '''
-        Suggests a command spelt similarly to whatever the user typed using the `difflib` library
+        Suggests a command spelt similarly to whatever the user typed using the `difflib` library.
         '''
         raw_commands: list[str] = []
         # Append all of the bot's commands' names to the list `raw_commands`

@@ -53,7 +53,7 @@ class Information(Cog):
     @command(description='Returns information about the server')
     async def server(self, ctx: Context) -> None:
         '''
-        Returns information about the guild the command was run in
+        Returns information about the guild the command was run in.
         Information included:
         - A brief server description
         - Server icon
