@@ -3,7 +3,7 @@ from discord import Embed
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from bot.utils.time import humanize_delta
+from ...utils.time import humanize_delta
 
 
 class Information(Cog):
