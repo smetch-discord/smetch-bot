@@ -24,7 +24,7 @@ class Moderation(Cog):
 
     @command(description='Bans a user')
     @can_ban()
-    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided'):
+    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided') -> None:
         for user in users:
             if user.id == ctx.author.id or user.top_role >= ctx.author.top_role:
                 continue
@@ -32,3 +32,4 @@ class Moderation(Cog):
                 user=user,
                 reason=f'Banned by {ctx.author.name}#{ctx.author.discriminator} for reason: {reason}'
             )
+        return
