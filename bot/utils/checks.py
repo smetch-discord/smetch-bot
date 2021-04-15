@@ -1,3 +1,4 @@
+from discord import Role
 from discord.ext.commands import Context, check
 from discord.utils import get
 
@@ -9,9 +10,9 @@ def can_ban():
     2. The moderator role
     Should be able to ban.
     '''
-    def predicate(ctx: Context):
-        mod_role = get(ctx.guild.roles, id=807229822799446036)
-        admin_role = get(ctx.guild.roles, id=806922773649555469)
+    def predicate(ctx: Context) -> bool:
+        mod_role: Role = get(ctx.guild.roles, id=807229822799446036)
+        admin_role: Role = get(ctx.guild.roles, id=806922773649555469)
         if mod_role in ctx.author.roles or admin_role in ctx.author.roles:
             return True
         else:
