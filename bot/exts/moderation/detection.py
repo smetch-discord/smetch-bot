@@ -1,4 +1,3 @@
-from operator import contains
 from discord.errors import NotFound
 from discord.ext.commands import Cog, Bot
 from discord import Message, Role, Invite

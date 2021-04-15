@@ -104,7 +104,7 @@ class Information(Cog):
         ).add_field(
             name='Member count:',
             value=f'👥 {humans} humans\n🤖 {bots} bots\nTotal: {total}\
-                  \n🟢 {online} ⚪ {offline}',
+                  \n<:online:832185731845062716> {online} <:offline:832185762618671164> {offline}',
             inline=False
         ).add_field(
             name='Current owner:',

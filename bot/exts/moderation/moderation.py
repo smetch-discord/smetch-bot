@@ -1,9 +1,10 @@
-from discord.ext.commands import Bot, Cog, Context, command, has_permissions
+from discord.ext.commands import Bot, Cog, Context, command
 from discord.ext.commands.converter import Greedy
 from discord import Member, Embed
 from typing import Optional
 
 from utils.checks import can_ban
+
 
 class Moderation(Cog):
     '''
@@ -13,15 +14,19 @@ class Moderation(Cog):
     '''
 
     def __init__(self, bot: Bot) -> None:
+        print('This cog was loaded')
         self.bot: Bot = bot
-        print(can_ban)
         return
+
+    @command
+    async def test(self, ctx: Context):
+        await ctx.send('Test returned')
 
     @command(description='Bans a user')
     @can_ban()
-    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided', message_deletion_days: Optional[int] = None):
+    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided'):
         for user in users:
-            await user.ban(
-                delete_message_days=message_deletion_days,
+            await ctx.guild.ban(
+                user=user,
                 reason=f'Banned by {ctx.author.name}#{ctx.author.discriminator} for reason: {reason}'
             )
