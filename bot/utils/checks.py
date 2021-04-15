@@ -1,4 +1,4 @@
-from discord import Role
+from discord import Role, DMChannel
 from discord.ext.commands import Context, check
 from discord.utils import get
 

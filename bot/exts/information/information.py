@@ -1,6 +1,5 @@
-from os import name
 from discord.ext.commands import Cog, Bot, Context, command
-from discord import Embed, Guild, Invite
+from discord import Embed, Guild, Invite, Member
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -49,6 +48,14 @@ class Information(Cog):
 
         await ctx.send(embed=embed)
         return
+
+    @command(description='Returns information about a ceratin user')
+    async def user(self, ctx: Context, user: Member) -> None:
+        '''
+        Command still a WIP
+        '''
+        name = f'{user.display_name}#{user.discriminator}'
+        ctx.send(name)
 
     @command(description='Returns information about the server')
     async def server(self, ctx: Context) -> None:
