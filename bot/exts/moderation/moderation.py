@@ -26,6 +26,8 @@ class Moderation(Cog):
     @can_ban()
     async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided'):
         for user in users:
+            if user.id == ctx.author.id or user.top_role >= ctx.author.top_role:
+                continue
             await ctx.guild.ban(
                 user=user,
                 reason=f'Banned by {ctx.author.name}#{ctx.author.discriminator} for reason: {reason}'
