@@ -19,8 +19,7 @@ class Moderation(Cog):
 
     @command(description='Bans a user')
     @can_ban()
-    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided', message_deletion_days: int = None):
-        print('Hi')
+    async def ban(self, ctx: Context, users: Greedy[Member], reason: str = 'None was provided', message_deletion_days: Optional[int] = None):
         for user in users:
             await user.ban(
                 delete_message_days=message_deletion_days,
