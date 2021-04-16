@@ -18,7 +18,9 @@ class Detector(Cog):
         If the message contains >= 5 pings, checks if the message sender was a staff member.
         Returns if the member was a staff member, as they may have legitimate reason for pinging
         '''
-        mentions: list[int] = message.raw_mentions
+        user_mentions: list[int] = message.raw_mentions
+        role_mentions: list[int] = message.raw_role_mentions
+        mentions: list[int] = user_mentions + role_mentions
         number_of_mentions: int = len(mentions)
 
         # Exit early if there are less than 5 pings in the message
