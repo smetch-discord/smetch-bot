@@ -4,15 +4,15 @@ from discord.ext.commands.converter import Greedy
 from discord import Member
 from typing import Optional
 
-from utils.checks import can_ban, can_kick
+from bot.utils.checks import can_ban, can_kick
 
 
 class Moderation(Cog):
-    '''
-    Basic moderation capabilites including:
+    """
+    Basic moderation capabilities including:
     - Ban
     - Kick
-    '''
+    """
 
     def __init__(self, bot: Bot) -> None:
         print('This cog was loaded')
@@ -29,16 +29,14 @@ class Moderation(Cog):
 
     @command(description='Bans a user')
     @can_ban()
-    async def ban(self, ctx: Context, users: Greedy[Member], *reason: Optional[tuple[str]]) -> None:
-        '''
+    async def ban(self, ctx: Context, users: Greedy[Member], *, reason: str) -> None:
+        """
         Bans a user after checking for the correct permissions
         Makes sure that the user is either:
         1. An administrator
         2. A moderator
         It also prevents anybody from banning themselves
-        '''
-        # Each word in the reason is provided as a separate string, concatenate them together
-        reason = ' '.join([word for word in reason]) if reason else 'No reason was provided'
+        """
         for user in users:
             # Make sure the user is not banning themselves or somebody higher than them in the role hierarchy
             if user.id == ctx.author.id or user.top_role >= ctx.author.top_role:

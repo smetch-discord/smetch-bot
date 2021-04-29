@@ -2,14 +2,14 @@ from dateutil.relativedelta import relativedelta
 
 
 def _stringify_time_unit(unit, value) -> str:
-    '''
+    """
     Returns a string representing a certain unit of time.
     For example:
     >>> _stringify_time_unit('hours', 9)
     '9 hours'
     >>> _stringify_time_unit('minutes', 0)
     'less than a minute'
-    '''
+    """
     if unit == 'seconds' and value == 0:
         return '0 seconds'
     elif value == 1:
@@ -23,11 +23,11 @@ def _stringify_time_unit(unit, value) -> str:
 
 
 def humanize_delta(delta: relativedelta, precision: str = 'seconds', max_units: int = 6) -> str:
-    '''
+    """
     Returns a human-readable version of the `relativedelta` object.
     `precision` specifies the smallest unit of time to include (e.g. 'seconds', 'minutes').
     `max_units` specifies the maximum number of units of time to include (e.g. 1 may include days but not hours).
-    '''
+    """
     if max_units <= 0:
         raise ValueError('max_units must be positive')
 

@@ -3,17 +3,17 @@ from discord import Embed, Guild, Invite, Member
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from utils.time import humanize_delta
+from bot.utils.time import humanize_delta
 
 
 class Information(Cog):
-    '''
+    """
     Provides information about various things including:
     - The server
     - The bot's latency
 
     > More to be added
-    '''
+    """
 
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
@@ -21,11 +21,11 @@ class Information(Cog):
 
     @command(description='Returns bot latency')
     async def ping(self, ctx: Context) -> None:
-        '''
+        """
         Returns two types of latency:
         1. The processing time it takes for the bot to register a command
         2. The Discord API Latency. Measures the time between a `HEARTBEAT` and a `HEARTBEAT_ACK`
-        '''
+        """
         current_time: datetime = datetime.utcnow()
         message_creation: datetime = ctx.message.created_at
         command_time: float = (current_time - message_creation).total_seconds() * 1000
@@ -49,17 +49,17 @@ class Information(Cog):
         await ctx.send(embed=embed)
         return
 
-    @command(description='Returns information about a ceratin user')
+    @command(description='Returns information about a certain user')
     async def user(self, ctx: Context, user: Member) -> None:
-        '''
+        """
         Command still a WIP
-        '''
+        """
         name = f'{user.display_name}#{user.discriminator}'
-        ctx.send(name)
+        await ctx.send(name)
 
     @command(description='Returns information about the server')
     async def server(self, ctx: Context) -> None:
-        '''
+        """
         Returns information about the guild the command was run in.
         Information included:
         - A brief server description
@@ -70,7 +70,7 @@ class Information(Cog):
         - How many members are online/offline
         - Current server owner
         - Boost information
-        '''
+        """
         # Save guild to variable instead of using `ctx.message.guild` each time
         guild: Guild = ctx.message.guild
 

@@ -133,7 +133,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .vscode/settings.json
-data/config.yml
 
 # Editing environments
 .vscode

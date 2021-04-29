@@ -3,12 +3,12 @@ from datetime import datetime
 
 
 class InfractionClient:
-    '''
+    """
     Class which enables interaction with the MongoDB database for infractions it has pre-defined methods:
     1. `insert_infraction`
     2. `insert_mute`
     3. `expire_mute`
-    '''
+    """
 
     def __init__(self, uri: str) -> None:
         self.client: AsyncIOMotorClient = AsyncIOMotorClient(uri)

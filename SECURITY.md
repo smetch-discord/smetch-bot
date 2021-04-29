@@ -48,7 +48,7 @@ It is calculated using these values with the corresponding options:
     - Low
     - High
 
-**We ask you to include your option for each of these prompts when reporting the vulnerability so we can easily calculate the CVSS score.**
+**We ask you to include your option for each of these prompts when reporting the vulnerability, so we can easily calculate the CVSS score.**
 
 ### Step 3: How easily can someone discover this issue?
 
@@ -78,7 +78,7 @@ This could take the form of a simple step-by-step guide.
 
 ## Reporting a vulnerability
 
-Here's a simple step by step guide on what to do once you find a vulnerability:
+Here's a simple step-by-step guide on what to do once you find a vulnerability:
 
 1. Make sure the vulnerability is, indeed a vulnerability, and not a bug
 2. If you have discovered a bug, open an issue on the [repository issue tracker](https://github.com/smetch-discord/smetch-bot/issues)

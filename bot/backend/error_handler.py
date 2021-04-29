@@ -1,15 +1,20 @@
-from discord.ext.commands import Cog, Bot, Context, errors
 import difflib
+import inspect
+import logging
+from discord.ext.commands import Cog, Bot, Context, errors
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 class ErrorHandler(Cog):
-    '''
+    """
     Generic handling of any errors thrown by a command.
 
     If the error was that the user used a command that doesn't exist:
     1. Try and get a tag from the `resources/tags` folder,
     2. Suggest a similarly spelled command
-    '''
+    """
 
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
@@ -17,30 +22,32 @@ class ErrorHandler(Cog):
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error: errors.CommandError) -> None:
-        '''
+        """
         Listen for errors thrown by commands in order to handle them accordingly
-        '''
+        """
         if isinstance(error, errors.CommandNotFound):
             # Attempt to get a tag
             await self.get_tag(ctx)
+        elif isinstance(error, errors.MissingRequiredArgument):
+            await self.missing_required_arguments(ctx, error)
         else:
             raise error
         return
 
     async def get_tag(self, ctx: Context):
-        '''
+        """
         Attempts to get a tag from the `resources/tags` folder.
         Then adds the markdown to an `Embed` object with:
         - Title: name of the tag's markdown file
         - Description: content of the tag's markdown file
-        '''
+        """
         await self.suggest_similar_command(ctx, ctx.invoked_with)
         return
 
     async def suggest_similar_command(self, ctx: Context, command_name: str) -> None:
-        '''
+        """
         Suggests a command spelt similarly to whatever the user typed using the `difflib` library.
-        '''
+        """
         raw_commands: list[str] = []
         # Append all of the bot's commands' names to the list `raw_commands`
         for command in self.bot.walk_commands():
@@ -58,6 +65,10 @@ class ErrorHandler(Cog):
             description = f'{misspelled_content.replace(command_name, similar_command_name, 1)}'
             await ctx.send(f'**Did you mean** `{description}` **?**')
         return
+
+    async def missing_required_arguments(self, ctx: Context, error: errors.MissingRequiredArgument):
+        missing_argument: inspect.Parameter = error.param
+        await ctx.send(f"Missing required argument {missing_argument}")
 
 
 def setup(bot: Bot) -> None:

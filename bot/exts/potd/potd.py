@@ -1,4 +1,4 @@
-from discord.ext.commands import Bot, Cog, Context, group, command
+from discord.ext.commands import Bot, Cog, Context, group
 
 
 class POTD(Cog):
@@ -9,7 +9,7 @@ class POTD(Cog):
 
     @group(invoke_without_command=True)
     async def potd(self, ctx: Context):
-        ctx.send('Problem of the day')
+        await ctx.send('Problem of the day')
 
     @potd.command()
     async def new(self, cttx: Context):
