@@ -42,7 +42,7 @@ class Detector(Cog):
         is_staff: bool = staff_role in message.author.roles
 
         if not is_staff:
-            # Insert disciplinary punishment
+            await message.delete()
             await message.channel.send('Spam pings detected')
         return
 
