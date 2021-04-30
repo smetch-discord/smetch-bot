@@ -31,8 +31,8 @@ class Detector(Cog):
         if number_of_mentions <= 4:
             return
 
-        log.warning(f"Message with more than 5 pings detected.\n"
-                    f"Message info:\n"
+        log.warning("Message with more than 5 pings detected.\n"
+                    "Message info:\n"
                     f"Message ID: {message.id}\n"
                     f"Channel ID: {message.channel.id}\n"
                     f"Message Author ID: {message.author.id}")
@@ -44,6 +44,8 @@ class Detector(Cog):
         if not is_staff:
             await message.delete()
             await message.channel.send('Spam pings detected')
+        else:
+            log.info("Message was sent by staff member so no action was taken")
         return
 
     @Cog.listener('on_message')
@@ -59,7 +61,7 @@ class Detector(Cog):
         if not contains_invites:
             return
 
-        offending_invites: list[Invite] = []
+        offending_invites: list[str] = []
 
         # Append valid invites that don't belong to SMETCH to `offending_invites`
         for invite in invites:
