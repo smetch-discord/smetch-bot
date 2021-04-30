@@ -23,24 +23,27 @@ class Secrets:
         if not ("secrets" in config.keys()):
             log.critical("No secrets field was located in config")
             raise KeyError("No secrets key found")
-        secrets: dict = config["secrets"]
 
-        self.bot_token: str = secrets.get("bot-token")
-        self.mongo_uri: str = secrets.get("mongo-uri")
-        self.github_token: str = secrets.get("github-token")
+        secrets_list: dict = config["secrets"]
+
+        self.prefix: str = secrets_list.get("prefix")
+        self.bot_token: str = secrets_list.get("bot-token")
+        self.mongo_uri: str = secrets_list.get("mongo-uri")
+        self.github_token: str = secrets_list.get("github-token")
 
         pretty_print_names: dict[str, str] = {
+            "prefix": "Discord bot prefix",
             "bot-token": "Discord bot token",
             "mongo-uri": "MongoDB connection URI",
             "github-token": "GitHub token"
         }
 
-        for secret in (self.bot_token, self.mongo_uri, self.github_token):
+        for secret in (self.prefix, self.bot_token, self.mongo_uri, self.github_token):
             if secret is None:
-                secret_name: str = f'{secret=}'.split("=")[0]
-                secret_name: str = pretty_print_names[secret_name]
-                log.critical(f'No {secret_name} was found')
+                log.critical("Something is missing")
 
     @staticmethod
     def bot_token_check(token: str):
         pass
+
+secrets = Secrets()
