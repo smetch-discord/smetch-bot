@@ -7,11 +7,11 @@ intents = Intents.default()
 intents.members = True
 intents.presences = True
 
-bot: Bot = Bot('lol ', intents=intents)
-
 config = safe_load(open('config.yml'))
 
-bot.load_extension('bot.exts')
-bot.load_extension('bot.backend')
+smetch: Bot = Bot(config['prefix'], intents=intents)
 
-bot.run(config['token'])
+smetch.load_extension('bot.exts')
+smetch.load_extension('bot.backend')
+
+smetch.run(config['bot-token'])
