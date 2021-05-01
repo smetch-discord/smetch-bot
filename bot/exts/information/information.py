@@ -35,7 +35,7 @@ class Information(Cog):
         api_ping: str = f'{self.bot.latency * 1000:.3f} ms'
 
         embed: Embed = Embed(
-            title='Ping!',
+            title='Pong!',
             colour=0x00d166
         )
 
