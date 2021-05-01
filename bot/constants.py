@@ -4,6 +4,8 @@ from yaml import safe_load
 from logging import getLogger, Logger, DEBUG
 from pathlib import Path
 
+import os
+
 log: Logger = getLogger(__name__)
 log.setLevel(DEBUG)
 
