@@ -1,0 +1,43 @@
+name: Lint CI
+
+on:
+  push:
+    branches:
+    - main
+    - heroku-deployment
+  
+  pull_request:
+    branches:
+    - main
+    - heroku-deployment
+  
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        
+    - name: Install dependencies
+      run: python3 -m pip install pipenv
+      
+    - name: Enter pipenv shell
+      run: python3 -m pipenv shell
+        
+    - name: Install dependencies
+      run: pipenv install
+      
+    - name: Run fixes
+      run: pipenv run fix
+      
+    - name: Run linting
+      run: pipenv run lint
