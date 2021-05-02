@@ -11,7 +11,7 @@ on:
       - heroku-deployment
 
 jobs:
-  Send embed:
+  send_embed:
   
     runs-on: ubuntu-latest
     name: Send an embed to Discord
