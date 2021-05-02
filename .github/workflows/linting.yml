@@ -39,12 +39,6 @@ jobs:
     - name: Run linting
       run: python3 -m pipenv run lint
   
-  send_embed:
-  
-    runs-on: ubuntu-latest
-    name: Send an embed to Discord
-
-    steps:
     - name: Run the GitHub Actions Status Embed Action
       uses: SebastiaanZ/github-status-embed-for-discord@main
       with:
