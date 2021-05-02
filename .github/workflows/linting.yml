@@ -27,17 +27,14 @@ jobs:
       with:
         python-version: 3.9
         
-    - name: Install dependencies
+    - name: Install pipenv
       run: python3 -m pip install pipenv
-      
-    - name: Enter pipenv shell
-      run: python3 -m pipenv shell
         
     - name: Install dependencies
-      run: pipenv install
+      run: python3 -m pipenv install
       
     - name: Run fixes
-      run: pipenv run fix
+      run: python3 -m pipenv run fix
       
     - name: Run linting
-      run: pipenv run lint
+      run: python3 -m pipenv run lint
