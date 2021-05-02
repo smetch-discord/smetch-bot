@@ -35,9 +35,15 @@ class Information(Cog):
         api_ping: str = f'{self.bot.latency * 1000:.3f} ms'
 
         embed: Embed = Embed(
-            title='Ping!',
+            title='Pong!',
             colour=0x00d166
         )
+
+        embed.timestamp = current_time
+
+        user: Member = ctx.author
+        user_info: str = f"{user.display_name}#{user.discriminator}"
+        embed.set_footer(text=f"Requested by {user_info}")
 
         for description, latency in zip(['Command Processing Time', 'Discord API Latency'], [command_time, api_ping]):
             embed.add_field(

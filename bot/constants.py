@@ -1,10 +1,12 @@
-from typing import Dict
-
-from yaml import safe_load
 from logging import getLogger, Logger, DEBUG
 from pathlib import Path
 
+from yaml import safe_load
+
+from bot.utils.regex import TOKEN_REGEX
+
 import os
+
 
 log: Logger = getLogger(__name__)
 log.setLevel(DEBUG)
@@ -34,19 +36,23 @@ class Secrets:
         self.mongo_uri: str = secrets_list.get("mongo-uri")
         self.github_token: str = secrets_list.get("github-token")
 
-        pretty_print_names: dict[str, str] = {
-            "prefix": "Discord bot prefix",
-            "bot-token": "Discord bot token",
-            "mongo-uri": "MongoDB connection URI",
-            "github-token": "GitHub token"
-        }
+        # pretty_print_names: dict[str, str] = {
+        #     "prefix": "Discord bot prefix",
+        #     "bot-token": "Discord bot token",
+        #     "mongo-uri": "MongoDB connection URI",
+        #     "github-token": "GitHub token"
+        # }
 
         for secret in (self.prefix, self.bot_token, self.mongo_uri, self.github_token):
             if secret is None:
                 log.critical("Something is missing")
 
     @staticmethod
-    def bot_token_check(token: str):
-        pass
+    def bot_token_check(token: str) -> bool:
+        regex_passing: bool = bool(TOKEN_REGEX.match(token))
+        if not regex_passing:
+            return False
+        return True
+
 
 secrets = Secrets()
