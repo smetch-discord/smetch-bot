@@ -1,5 +1,7 @@
 # SMETCH Bot
 
+![Discord](https://img.shields.io/discord/806922773607874590?color=green&label=Discord&logo=discord&logoColor=white&style=flat-square)
+
 This is the server bot for SMETCH
 
 ### Contributing
