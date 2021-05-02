@@ -5,12 +5,12 @@ on:
     branches:
     - main
     - heroku-deployment
-  
+
   pull_request:
     branches:
     - main
     - heroku-deployment
-  
+
   workflow_dispatch:
 
 jobs:
@@ -19,22 +19,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
+
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-        
+
     - name: Install pipenv
       run: python3 -m pip install pipenv
-        
+
     - name: Install dependencies
       run: python3 -m pipenv install --dev
-      
+
     - name: Run fixes
       run: python3 -m pipenv run fix
-      
+
     - name: Run linting
       run: python3 -m pipenv run lint
