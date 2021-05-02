@@ -1,7 +1,7 @@
-from typing import Dict
-from yaml import safe_load
 from logging import getLogger, Logger, DEBUG
 from pathlib import Path
+
+from yaml import safe_load
 
 from bot.utils.regex import TOKEN_REGEX
 
@@ -47,7 +47,8 @@ class Secrets:
     def bot_token_check(token: str) -> bool:
         regex_passing: bool = bool(TOKEN_REGEX.match(token))
         if not regex_passing:
-            return
+            return False
+        return True
 
 
 secrets = Secrets()
