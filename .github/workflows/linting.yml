@@ -31,7 +31,7 @@ jobs:
       run: python3 -m pip install pipenv
         
     - name: Install dependencies
-      run: python3 -m pipenv install
+      run: python3 -m pipenv install --dev
       
     - name: Run fixes
       run: python3 -m pipenv run fix
