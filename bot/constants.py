@@ -5,6 +5,9 @@ from yaml import safe_load
 
 from bot.utils.regex import TOKEN_REGEX
 
+import os
+
+
 log: Logger = getLogger(__name__)
 log.setLevel(DEBUG)
 
@@ -14,8 +17,9 @@ if Path("config.yml").exists():
         config: dict = safe_load(config_file)
     log.info("Successfully parsed YAML file")
 else:
-    log.critical("No config file was found")
-    raise FileNotFoundError("config.yml")
+    # log.critical("No config file was found")
+    # raise FileNotFoundError("config.yml")
+    config: dict = {'secrets': {'bot-token': os.environ.get('TOKEN'), 'prefix': os.environ.get('PREFIX')}}
 
 
 class Secrets:
