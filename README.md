@@ -1,5 +1,12 @@
 # SMETCH Bot
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/smetch-discord/smetch-bot/Lint%20CI?label=Lint%20CI&logo=github&logoColor=white&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/smetch-discord/smetch-bot?label=Issues&logo=github&style=flat-square)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/smetch-discord/smetch-bot?label=Pull%20Requests&logo=github&style=flat-square)
+![GitHub](https://img.shields.io/github/license/smetch-discord/smetch-bot?label=License&logo=github&style=flat-square)
+
+![Discord](https://img.shields.io/discord/806922773607874590?color=green&label=Discord&logo=discord&logoColor=white&style=flat-square) 
+
 This is the server bot for SMETCH
 
 ### Contributing

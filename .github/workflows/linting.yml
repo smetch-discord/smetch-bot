@@ -1,0 +1,50 @@
+name: Lint CI
+
+on:
+  push:
+    branches:
+    - main
+    - heroku-deployment
+
+  pull_request:
+    branches:
+    - main
+    - heroku-deployment
+
+  workflow_dispatch:
+
+jobs:
+  Lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install pipenv
+      run: python3 -m pip install pipenv
+
+    - name: Install dependencies
+      run: python3 -m pipenv install --dev
+
+    - name: Run fixes
+      run: python3 -m pipenv run fix
+
+    - name: Run linting
+      run: python3 -m pipenv run lint
+  
+    - name: Run the GitHub Actions Status Embed Action
+      uses: SebastiaanZ/github-status-embed-for-discord@main
+      with:
+        webhook_id: '808846600653766706'  # Has to be provided as a string
+        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+        pr_author_login: ${{ github.event.pull_request.user.login }}
+        pr_number: ${{ github.event.pull_request.number }}
+        pr_title: ${{ github.event.pull_request.title }}
+        pr_source: ${{ github.event.pull_request.head.label }}
