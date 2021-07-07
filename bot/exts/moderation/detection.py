@@ -57,8 +57,13 @@ class Detector(Cog):
         regex: str = 'discord.gg/.*'
         invites: list[str] = findall(regex, message.content.lower())
         contains_invites: bool = len(invites) > 0
-        # Exit early if the message doesn't contain any invites
-        if not contains_invites:
+
+        # Check if the user is a staff member
+        staff_role: Role = get(message.guild.roles, id=808099724904759297)
+        is_staff: bool = staff_role in message.author.roles
+
+        # Exit early if the message doesn't contain any invites or the user is staff
+        if is_staff or not contains_invites:
             return
 
         offending_invites: list[str] = []
